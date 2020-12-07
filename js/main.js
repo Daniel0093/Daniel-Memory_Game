@@ -1,53 +1,175 @@
-// Part 1 Here I Fix Intro Game & Player Name
+// Select The Start Game Button
+document.querySelector(".control-buttons span").onclick = function () {
 
-
-// Here I select Start Game Div with Some Conditions
-document.querySelector('.control-buttons span').onclick = function(){
-
-    // Prompt Windo To Ask For Name
-    let yourName = prompt ("What's Your Name ?");
-
-    // In Case There Is No Entering Name : if name is empty
-    if (yourName == null || yourName == '') { // '' = empty!
-
-    // Set Name To Unknown
-        document.querySelector('.name span').innerHTML= 'Unknown';
-    // In Case There Is An Entering Name
+    // Prompt Window To Ask For Name
+    let yourName = prompt("Whats Your Name?");
+  
+    // If Name Is Empty
+    if (yourName == null || yourName == "") {
+  
+      // Set Name To Unknown
+      document.querySelector(".name span").innerHTML = 'Unknown';
+  
+    // Name Is Not Empty
     } else {
-
-        document.querySelector('.name span ').innerHTML= yourName;
+  
+      // Set Name To Your Name
+      document.querySelector(".name span").innerHTML = yourName;
+  
     }
+  
+    // Remove Splash Screen
+    document.querySelector(".control-buttons").remove();
+  
+  };
+  
+  // Effect Duration
+  let duration = 1000;  
+  
+  // Select Blocks Container
+  let blocksContainer = document.querySelector(".memory-game-blocks");
+  
+  // Create Array From Game Blocks
+  let blocks = Array.from(blocksContainer.children);
+  
+  // Create Range Of Keys
+  // let orderRange = [...Array(blocks.length).keys()];
+  
+  let orderRange = Array.from(Array(blocks.length).keys());
+  
+  // console.log(orderRange);
+  shuffle(orderRange);
+  // console.log(orderRange);
+  
+  // Add Order Css Property To Game Blocks
+  blocks.forEach((block, index) => {
+  
+    // Add CSS Order Property
+    block.style.order = orderRange[index];
+  
+    // Add Click Event
+    block.addEventListener('click', function () {
+  
+      // Trigger The Flip Block Function
+      flipBlock(block);
+  
+    });
+  
+  });
+  
+  // Flip Block Function
+  function flipBlock(selectedBlock) {
+  
+    // Add Class is-flipped
+    selectedBlock.classList.add('is-flipped');
+  
+    // Collect All Flipped Cards
+    let allFlippedBlocks = blocks.filter(flippedBlock => flippedBlock.classList.contains('is-flipped'));
+  
+    // If Theres Two Selected Blocks
+    if (allFlippedBlocks.length === 2) {
+  
+      // console.log('Two Flipped Blocks Selected');
+  
+      // Stop Clicking Function
+      stopClicking();
+  
+      // Check Matched Block Function
+      checkMatchedBlocks(allFlippedBlocks[0], allFlippedBlocks[1]);
+  
+    }
+  
+  }
+  
+  // Stop Clicking Function
+  function stopClicking() {
+  
+    // Add Class No Clicking on Main Container
+    blocksContainer.classList.add('no-clicking');
+  
+    // Wait Duration
+    setTimeout(() => {
+  
+      // Remove Class No Clicking After The Duration
+      blocksContainer.classList.remove('no-clicking');
+  
+    }, duration);
+  
+  }
+  
+  // Check Matched Block
+  function checkMatchedBlocks(firstBlock, secondBlock) {
+  
+    let triesElement = document.querySelector('.tries span');
+  
+    if (firstBlock.dataset.technology === secondBlock.dataset.technology) {
+  
+      firstBlock.classList.remove('is-flipped');
+      secondBlock.classList.remove('is-flipped');
+  
+      firstBlock.classList.add('has-match');
+      secondBlock.classList.add('has-match');
+  
+      document.getElementById('success').play();
+  
+    } else {
+  
+      triesElement.innerHTML = parseInt(triesElement.innerHTML) + 1;
+  
+      setTimeout(() => {
+  
+        firstBlock.classList.remove('is-flipped');
+        secondBlock.classList.remove('is-flipped');
+  
+      }, duration);
+  
+      document.getElementById('fail').play();
+  
+    }
+  
+  }
+  
+  // Shuffle Function
+  function shuffle(array) {
+  
+    // Settings Vars
+    let current = array.length,
+        temp,
+        random;
+  
+    while (current > 0) {
+  
+      // Get Random Number
+      random = Math.floor(Math.random() * current);
+  
+      // Decrease Length By One
+      current--;
+  
+      // [1] Save Current Element in Stash
+      temp = array[current];
+  
+      // [2] Current Element = Random Element
+      array[current] = array[random];
+  
+      // [3] Random Element = Get Element From Stash
+      array[random] = temp;
+  
+    }
+  
+    return array;
+  
+  }
 
-    // To remove  whole Start Game Div Once We Type The Name or AnyWay!
-    // Remove Splash Screen 
-    document.querySelector('.control-buttons').remove();
-
-}
 
 
 
-// Part 2 Here I Created The Main Variables and worked on duration of flipping
 
-let duration = 1000; // duration variable to apply it on all blocks to have the same flipping duration
 
-let blocksContainer =  document.querySelector('.memory-game-blocks');
 
-// Here making an array to collect all items of blocks and having control on it
 
-// Here All Children of 'memory-game-blocks' collected 
-let blocks = Array.from(blocksContainer.children);
 
-console.log(blocks);
 
-// Here we give random order number for Arrays Items (Shuffle)
 
-// To know how many item we have /children/
-
-console.log(blocks.length); // 20 
-
-let orderRange = [...Array(blocks.length).keys()];
-
-console.log(orderRange);
 
 
 
